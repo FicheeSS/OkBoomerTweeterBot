@@ -1,1 +1,1 @@
-# OkBoomerTweeterBot
+# OkBoomerTwiterBot
