@@ -10,7 +10,7 @@ auth.set_access_token(ACCES_TOKEN, ACCES_TOKEN_SECRET)
 api = tweepy.API(auth)
 DayTweet = [[],[]]
 
-def getAndTweetFromMP():
+def getTweetFromMP():
     IsMessagesLeft = True
     while IsMessagesLeft  :
         messages = api.list_direct_messages(100)
@@ -36,6 +36,7 @@ def getAndTweetFromMP():
         
 def SendBestTweet():
     bests = [[0,""],[0,""],[0,""]]
+    totalSuggestedTweets = 0 
     for n in DayTweet[1]:
         if n > bests[0][0] :
             bests[2][0] = bests[1][0]
@@ -44,16 +45,21 @@ def SendBestTweet():
             bests[1][1] = bests[0][1]
             bests[0][0] = n
             bests[0][1] = DayTweet[0][n]
-        else if n > bests[1][0] :
+        elif n > bests[1][0] :
             bests[2][0] = bests[1][0]
             bests[2][1] = bests[1][1]
             bests[1][0] = n
             bests[1][1] = DayTweet[0][n]
-        else if  n > bests[2][0] :
+        elif  n > bests[2][0] :
             bests[2][0] = n
-            bests[2][1] = DayTweet[0][n]           
-            
-            
+            bests[2][1] = DayTweet[0][n]
+        totalSuggestedTweets += n     
+    api.update_status(tweetMsg(bests))
+    for b in bests[0]:
+        api.update_status("Ok boomer",in_reply_to_status_id=b["id"])            
+
+def tweetMsg(bests):
+    return "Les trois tweet de boomer sélectionés sont \n 1 - "+bests[0][0] +" : " + bests[0][1] + "\n 2 - " +bests[1][0] +" : " + bests[1][1] + "\n 3 - "+bests[2][0] +" : " + bests[2][1]   
 
 def IfTweetValid(msg):
     return True
